@@ -22,7 +22,7 @@ class Person:
         # the person has a list of its Links to other people
         self.outgoingLinks=list()
         # they also have a list of Links from others
-        self.numIncomingLinks=0
+        self.incomingLinks=dict()
 
         # this is the initial status of the person
         self.status=1.0
@@ -35,11 +35,11 @@ class Person:
         print "Incoming status is",self.incomingStatus
         for link in self.outgoingLinks:
             print "->",link.inPerson.personid
-        print self.numIncomingLinks,"incoming links"
+        print len(self.incomingLinks),"incoming links"
         print
 
     def getNumLinks(self):
-        return self.numIncomingLinks+len(self.outgoingLinks)
+        return len(self.incomingLinks)+len(self.outgoingLinks)
         
     def updateStatus(self):
         status += statusChange
@@ -108,7 +108,8 @@ class Population:
                 newlink = Link(outPerson = person, inPerson = linkedPerson, linkValueToOut = 0.0, linkValueToIn = 0.0)
                 self.links.append (newlink)
                 person.outgoingLinks.append(newlink)
-                linkedPerson.numIncomingLinks += 1
+                linkedPerson.incomingLinks[person.personid]=newlink
+
 
     def getRandomPerson (self):
         return self.people[randint(self.numPeople)]
@@ -176,7 +177,7 @@ class Population:
 #                print "Person",person.personid,"rewiring from",
                 worstLink = person.getWorstLink()
                 oldPerson = worstLink.inPerson
-                oldPerson.numIncomingLinks -= 1
+                oldPerson.incomingLinks.pop(person.personid)
                 #                print oldPerson.personid,
 
                 avoidPeople = [person.personid,]
@@ -186,8 +187,8 @@ class Population:
                 newPerson = self.findIndividualToLinkTo(avoidPeople)
 
                 worstLink.inPerson = newPerson
-                newPerson.numIncomingLinks += 1
-                if newPerson.numIncomingLinks == self.numPeople:
+                newPerson.incomingLinks[person.personid]=worstLink
+                if len(newPerson.incomingLinks) == self.numPeople:
                     print person.personid
                     print avoidPeople
                     print newPerson.personid
