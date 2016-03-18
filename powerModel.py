@@ -1,7 +1,7 @@
 # Copyright John Bryden under GPL3 license 
 #
-# However, don't publish any results generated using this code without
-# my permisison
+# However, don't publish any results generated using this code, or the
+# underlying model, without my permisison
 
 from pylab import *
 from collections import namedtuple
